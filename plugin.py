@@ -152,6 +152,12 @@ class IimSlideLocal:
 
     def onConnect(self, Connection, Status, Description):
         Domoticz.Debug("onConnect called")
+        if not Connection.Connected():
+            Domoticz.Debug("onConnect but disconnected so reconnect: "+Connection.Address+" "+Connection.Name)
+            self.myConn = Domoticz.Connection(
+                Name=Connection.Name, Transport="TCP/IP", Protocol="HTTP", Address=Connection.Address, Port="80")
+            self.myConn.Connect()
+            return
         currentMessage = self.connections[Connection.Name] if Connection.Name in self.connections else None
 
         if (Status == 0):
